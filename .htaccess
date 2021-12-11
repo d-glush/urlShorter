@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.+)$ redirecter.php?q=$1 [L,QSA]
+
+<FilesMatch ".(htaccess|json|phar|lock|md|xml)$">
+ Order Allow,Deny
+ Deny from all
+</FilesMatch>
