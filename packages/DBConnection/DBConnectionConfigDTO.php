@@ -2,6 +2,9 @@
 
 namespace App\DBConnection;
 
+/**
+ * @codeCoverageIgnore
+ */
 class DBConnectionConfigDTO {
     private string $host;
     private string $username;

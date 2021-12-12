@@ -2,6 +2,9 @@
 
 namespace App\Response;
 
+/**
+ * @codeCoverageIgnore
+ */
 class Response
 {
     public ?string $error = null;

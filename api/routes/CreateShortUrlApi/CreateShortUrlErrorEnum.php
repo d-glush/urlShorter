@@ -4,6 +4,9 @@ namespace Api\CreateShortUrlApi;
 
 use App\Enum\Enum;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateShortUrlErrorEnum extends Enum
 {
     public CONST CUSTOM_URL_ALREADY_EXISTS = 'custom url already exists';

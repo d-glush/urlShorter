@@ -2,6 +2,9 @@
 
 namespace App\ShortUrlRepository;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ShortUrlDTO {
     public ?int $id = null;
     public string $shortUrl;

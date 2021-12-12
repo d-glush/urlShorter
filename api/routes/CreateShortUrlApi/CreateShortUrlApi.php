@@ -31,7 +31,6 @@ class CreateShortUrlApi
             $response->setError(ResponseErrorEnum::INVALID_DATA);
             return $response;
         }
-        $this->fullUrl = $this->prepareFullUrl($this->fullUrl);
 
         if (!is_null($this->customUrl) && strlen($this->customUrl) > 0) {
             if ($this->urlShorterService->isShortUrlExists($this->customUrl)) {

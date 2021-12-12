@@ -4,6 +4,9 @@ namespace Api\CreateShortUrlApi;
 
 use App\Response\Response;
 
+/**
+ * @codeCoverageIgnore
+ */
 class CreateShortUrlApiResponse extends Response
 {
     public string $shortUrl;

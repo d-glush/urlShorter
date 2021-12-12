@@ -4,6 +4,9 @@ namespace App\Response;
 
 use App\Enum\Enum;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ResponseErrorEnum extends Enum
 {
     public CONST INVALID_METHOD = 'invalid method';

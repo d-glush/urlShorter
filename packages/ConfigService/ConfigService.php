@@ -2,6 +2,9 @@
 
 namespace App\ConfigService;
 
+/**
+ * @codeCoverageIgnore
+ */
 Class ConfigService
 {
     private ?array $config = null;
