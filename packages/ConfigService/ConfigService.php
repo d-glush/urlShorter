@@ -16,8 +16,28 @@ Class ConfigService
         return $this->config['logFileName'];
     }
 
-    public function getMaxCustomUrlLength(): string
+    public function getMaxCustomUrlLength(): int
     {
         return $this->config['maxCustomUrlLength'];
+    }
+
+    public function getGeneratingShortUrlLength(): int
+    {
+        return $this->config['generatingShortUrlLength'];
+    }
+
+    public function getAvailableShortUrlChars(): array
+    {
+        return $this->config['availableShortUrlChars'];
+    }
+
+    public function getDBConnectionConfig(): array
+    {
+        return  $this->config['DBConnectionConfigDTO'];
+    }
+
+    public function getFullUrlConnectTimeoutTime(): int
+    {
+        return  $this->config['validateFullUrlConnectTimeoutTimeMs'];
     }
 }

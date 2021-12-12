@@ -2,8 +2,13 @@
 
 use Api\CreateShortUrlApi\CreateShortUrlApi;
 use App\ConfigService\ConfigService;
+use App\DBConnection\DBConnection;
+use App\DBConnection\DBConnectionConfigDTO;
+use App\DBConnection\DBException;
 use App\Response\Response;
 use App\Response\ResponseErrorEnum;
+use App\ShortUrlRepository\ShortUrlRepository;
+use App\UrlShorterService\ShortUrlGenerator;
 use App\UrlShorterService\UrlShorterService;
 
 header("Access-Control-Allow-Orgin: *");
@@ -18,7 +23,18 @@ $result = null;
 switch($method) {
     case 'create_short_url':
         $configService = new ConfigService();
-        $urlShorterService = new UrlShorterService();
+        $dBConnectionConfig = new DBConnectionConfigDTO($configService->getDBConnectionConfig());
+        try {
+            $DBConnection = new DBConnection($dBConnectionConfig);
+        } catch (DBException $e) {
+            $result = new Response();
+            $result->setError(ResponseErrorEnum::DATABASE_ERROR);
+            break;
+        }
+        $shortUrlRepository = new ShortUrlRepository($DBConnection);
+        $shortUrlGenerator = new ShortUrlGenerator($configService);
+        $urlShorterService = new UrlShorterService($shortUrlRepository, $shortUrlGenerator);
+
         $createShortUrlRoute = new CreateShortUrlApi($urlShorterService, $configService);
         //$createShortUrlRoute = Di::createFromDi('CreateShortUrlApi');
         $result = $createShortUrlRoute->process();

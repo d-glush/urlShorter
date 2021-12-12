@@ -4,6 +4,7 @@ namespace Api\CreateShortUrlApi;
 
 use App\Response\ResponseErrorEnum;
 use App\ConfigService\ConfigService;
+use App\UrlShorterService\ShortUrlGenerateException;
 use App\UrlShorterService\UrlShorterService;
 
 class CreateShortUrlApi
@@ -36,11 +37,22 @@ class CreateShortUrlApi
                 $response->setError(CreateShortUrlErrorEnum::CUSTOM_URL_ALREADY_EXISTS);
                 return $response;
             }
+        } else {
+            if ($this->urlShorterService->isFullUrlExists($this->fullUrl)) {
+                $shortObj = $this->urlShorterService->getByFullUrl($this->fullUrl);
+                $response->setShortUrl($shortObj->getShortUrl());
+                return $response;
+            }
         }
 
-        $shortUrl = $this->urlShorterService->createShortUrl($this->fullUrl, $this->customUrl);
-        $response->setShortUrl($shortUrl);
-        return $response;
+        try {
+            $shortUrl = $this->urlShorterService->createShortUrl($this->fullUrl, $this->customUrl);
+            $response->setShortUrl($shortUrl);
+            return $response;
+        } catch (ShortUrlGenerateException $e) {
+            $response->setError(CreateShortUrlErrorEnum::URLS_OUT_OF_STOCK);
+            return $response;
+        }
     }
 
     private function collectInputData(): bool
@@ -59,16 +71,7 @@ class CreateShortUrlApi
 
     private function validateInputData(): bool
     {
-        $pregResult = preg_match(
-            '/^(https?:\/\/)?([А-яA-z0-9]{2,}[А-яA-z0-9.]+\.[А-яA-z]{2,})([А-я\/\d\w_\-%]+)([\?#][^\/\n]+)?/',
-            $this->fullUrl,
-            $matches
-        );
-
-        if (
-            !$pregResult
-            || strlen(!$matches[0]) != $this->fullUrl
-        ) {
+        if (!$this->isUrlAvailable($this->fullUrl)) {
             return false;
         }
 
@@ -80,5 +83,23 @@ class CreateShortUrlApi
         }
 
         return true;
+    }
+
+    public function isUrlAvailable($url): bool
+    {
+        if(!filter_var($url, FILTER_VALIDATE_URL)){
+            return false;
+        }
+
+        $curlInit = curl_init($url);
+        $msConnectTimeOut = $this->configService->getFullUrlConnectTimeoutTime();
+        curl_setopt($curlInit,CURLOPT_CONNECTTIMEOUT_MS,$msConnectTimeOut);
+        curl_setopt($curlInit,CURLOPT_HEADER,true);
+        curl_setopt($curlInit,CURLOPT_NOBODY,true);
+        curl_setopt($curlInit,CURLOPT_RETURNTRANSFER,true);
+
+        $response = curl_exec($curlInit);
+        curl_close($curlInit);
+        return (bool)$response;
     }
 }

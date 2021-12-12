@@ -1,5 +1,4 @@
 <?php
 
-include_once 'consts.php';
-include_once '../vendor/autoload.php';
+include_once $_SERVER["DOCUMENT_ROOT"] . '/vendor/autoload.php';
 
