@@ -31,9 +31,15 @@ class CreateShortUrlApi
             $response->setError(ResponseErrorEnum::INVALID_DATA);
             return $response;
         }
+        $this->fullUrl = $this->prepareFullUrl($this->fullUrl);
 
         if (!is_null($this->customUrl) && strlen($this->customUrl) > 0) {
             if ($this->urlShorterService->isShortUrlExists($this->customUrl)) {
+                $shortObj = $this->urlShorterService->getByShortUrl($this->customUrl);
+                if ($shortObj->getFullUrl() === $this->fullUrl) {
+                    $response->setShortUrl($shortObj->getShortUrl());
+                    return $response;
+                }
                 $response->setError(CreateShortUrlErrorEnum::CUSTOM_URL_ALREADY_EXISTS);
                 return $response;
             }
