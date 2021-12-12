@@ -9,14 +9,9 @@ class ShortUrlGenerator {
 
     private ConfigService $configService;
 
-    private array $availableShortUrlChars;
-    private int $shortUrlLength;
-
     public function __construct(ConfigService $configService)
     {
         $this->configService = $configService;
-        $this->availableShortUrlChars = $this->configService->getAvailableShortUrlChars();
-        $this->shortUrlLength = $this->configService->getGeneratingShortUrlLength();
     }
 
     /**
@@ -24,13 +19,15 @@ class ShortUrlGenerator {
      */
     public function generateShortUrlById(int $id): string
     {
-        $availableShortUrlCharsCount = count($this->availableShortUrlChars);
+        $availableShortUrlChars = $this->configService->getAvailableShortUrlChars();
+        $shortUrlLength = $this->configService->getGeneratingShortUrlLength();
+        $availableShortUrlCharsCount = count($availableShortUrlChars);
         $shortUrl = '';
 
         $nextCharPointer = $id;
-        while (strlen($shortUrl) < $this->shortUrlLength) {
+        while (strlen($shortUrl) < $shortUrlLength) {
             $correctedNextCharPointer = $nextCharPointer % $availableShortUrlCharsCount;
-            $shortUrl .= $this->availableShortUrlChars[$correctedNextCharPointer];
+            $shortUrl .= $availableShortUrlChars[$correctedNextCharPointer];
             $nextCharPointer = floor($nextCharPointer / $availableShortUrlCharsCount);
         }
         if ($nextCharPointer > 0) {
