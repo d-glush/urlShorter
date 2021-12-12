@@ -92,12 +92,8 @@ class DBConnection {
         if (!$queryResult) {
             throw new DBException();
         }
-        $result = [];
-        while ($row = $queryResult->fetch_assoc()) {
-            $result[] = $row;
-        }
 
-        return $result;
+        return $queryResult->fetch_all(MYSQLI_ASSOC);
     }
 
     /**

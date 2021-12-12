@@ -32,7 +32,7 @@ class CreateShortUrlApi
             return $response;
         }
 
-        if (!is_null($this->customUrl)) {
+        if (!is_null($this->customUrl) && strlen($this->customUrl) > 0) {
             if ($this->urlShorterService->isShortUrlExists($this->customUrl)) {
                 $response->setError(CreateShortUrlErrorEnum::CUSTOM_URL_ALREADY_EXISTS);
                 return $response;

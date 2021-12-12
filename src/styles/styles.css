@@ -1,0 +1,41 @@
+.wrapper {
+    max-width: 900px;
+    height: 100vh;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.shorter {
+    width: 100%;
+}
+.center{
+    display: flex;
+    align-items: center;
+}
+.shorter__inputs {
+    display: flex;
+    justify-content: space-between;
+}
+
+.inputs__input {
+    width: 100%;
+}
+
+.input__url {
+    /*display: flex;*/
+    /*flex-direction: column;*/
+    /*align-items: flex-end;*/
+}
+
+.shorter__button {
+    width: 100%;
+}
+
+.shorter__result {
+    display: flex;
+}
+
+#short_url_output {
+    font-size: 30px;
+}
