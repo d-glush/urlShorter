@@ -10,16 +10,15 @@
 1. git clone в папку домена (openserver или аналог)
 2. $ composer i
 3. Создать БД с одной таблицей
-   1. create table shorts
+   1. <code>*create table shorts
       (
-      id        int auto_increment
-      primary key,
+      id        int auto_increment primary key,
       full_url  text                 not null,
       short_url varchar(20)          not null,
       is_custom tinyint(1) default 0 not null,
       constraint short_url
       unique (short_url)
-      );
+      );*</code>
 4. Изменить данные подключения к БД тут /core/config.php
    
 Готово!
@@ -37,6 +36,6 @@
    6. Набор символов, из которых можно генерировать short url (этот список нельзя сокращать во избежании возможных коллизий в будующем)
 
 ###Инструкция пользователя
-1. По адресу '/' находится главная страница, которая позволяет получать сокращенные url
+1. По адресу 'https://\*domain\*/' находится главная страница, которая позволяет получать сокращенные url
 2. Если не вводить custom short url то короткий url сгенерируется, иначе будет выдан custom url, если такогого не существует
 3. Если попытаться получить сокращенный url на один и тот же полный url о генерация нового происходить не будет (не относится к custom url)
