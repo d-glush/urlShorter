@@ -98,7 +98,7 @@ class CreateShortUrlApi
 
         $curlInit = curl_init($url);
         $msConnectTimeOut = $this->configService->getFullUrlConnectTimeoutTime();
-        curl_setopt($curlInit,CURLOPT_CONNECTTIMEOUT_MS,$msConnectTimeOut);
+        curl_setopt($curlInit,CURLOPT_CONNECTTIMEOUT_MS, $msConnectTimeOut);
         curl_setopt($curlInit,CURLOPT_HEADER,true);
         curl_setopt($curlInit,CURLOPT_NOBODY,true);
         curl_setopt($curlInit,CURLOPT_RETURNTRANSFER,true);

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link href="src/styles/styles.css" rel="stylesheet" type="text/css">
     <link href="src/styles/nullstyle.css" rel="stylesheet" type="text/css">
-    <title>Document</title>
+    <title>UrlShorter</title>
 </head>
 <body>
 

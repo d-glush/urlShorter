@@ -16,6 +16,7 @@ class ShortUrlObj {
         $this->isCustom = !!$shortUrlDTO->getIsCustom();
     }
 
+    // @codeCoverageIgnoreStart
     public function getId(): ?int
     {
         return $this->id;
@@ -59,4 +60,5 @@ class ShortUrlObj {
         $this->isCustom = $isCustom;
         return $this;
     }
+    // @codeCoverageIgnoreEnd
 }
