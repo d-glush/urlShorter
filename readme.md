@@ -9,7 +9,7 @@
 ###Запуск проекта
 1. git clone в папку домена (openserver или аналог)
 2. $ composer i
-3. Создать БД с одной таблицей
+3. Создать БД MySql MariaDb с одной таблицей
    1. <code>*create table shorts
       (
       id        int auto_increment primary key,
