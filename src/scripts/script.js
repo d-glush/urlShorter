@@ -10,8 +10,14 @@ const loader = '<div class="preloader-wrapper big active">\n' +
     '    </div>\n' +
     '  </div>'
 
-const showToaster = function() {
-  M.toast({displayLength: 9999999, html: loader})
+const showLoadToaster = function() {
+  return M.toast({displayLength: 9999999, html: loader})
+}
+
+const showErrorToaster = function(html) {
+  M.toast({displayLength: 4000, html: html})
+  let toastElement = document.querySelector('.toast');
+  return M.Toast.getInstance(toastElement);
 }
 
 const hideAllToasters = function() {
@@ -21,7 +27,7 @@ const hideAllToasters = function() {
 const processGoClick = function() {
   const fullUrl = fullUrlInput.value;
   const customUrl = customUrlInput.value;
-  showToaster();
+  const loadToaster = showLoadToaster();
   goButton.setAttribute('disabled', 'disabled');
   copyButton.setAttribute('disabled', 'disabled');
 
@@ -31,16 +37,16 @@ const processGoClick = function() {
 
   const xhr = new XMLHttpRequest();
   xhr.onload  = function() {
-    hideAllToasters();
+    loadToaster.dismiss();
     goButton.removeAttribute('disabled');
     const result = JSON.parse(this.response);
     if (result.isError) {
-      console.log(result)
       fullUrlInput.classList.remove('valid');
       customUrlInput.classList.remove('valid');
       fullUrlInput.classList.add('invalid');
       customUrlInput.classList.add('invalid');
       shortUrlOutput.value = '';
+      showErrorToaster(result.error);
     } else {
       shortUrlOutput.value = `https://${document.domain}/` + result.shortUrl;
       copyButton.removeAttribute('disabled');
@@ -58,10 +64,8 @@ const copyShortUrl = async function() {
 }
 
 const goButton = document.getElementById('go_button');
-
 const fullUrlInput = document.getElementById('full_url_input');
 const customUrlInput = document.getElementById('custom_url_input');
-
 const shortUrlOutput = document.getElementById('short_url_output');
 const copyButton = document.getElementById('copy_button');
 
