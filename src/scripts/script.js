@@ -42,11 +42,11 @@ const processGoClick = function() {
       customUrlInput.classList.add('invalid');
       shortUrlOutput.value = '';
     } else {
-      shortUrlOutput.value = 'https://urlshorter.ru/' + result.shortUrl;
+      shortUrlOutput.value = `https://${document.domain}/` + result.shortUrl;
       copyButton.removeAttribute('disabled');
     }
   }
-  xhr.open("POST", "https://urlshorter.ru/api/create_short_url");
+  xhr.open("POST", `https://${document.domain}/api/create_short_url`);
   xhr.send(formData);
 }
 
