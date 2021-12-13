@@ -4,6 +4,7 @@ use App\ConfigService\ConfigService;
 use App\DBConnection\DBConnection;
 use App\DBConnection\DBConnectionConfigDTO;
 use App\DBConnection\DBException;
+use App\DBConnection\MysqliWrapper;
 use App\ShortUrlRepository\ShortUrlRepository;
 use App\UrlShorterService\ShortUrlGenerator;
 use App\UrlShorterService\UrlShorterService;
@@ -15,7 +16,7 @@ $shortUrl = $_GET['q'];
 $configService = new ConfigService();
 $dBConnectionConfig = new DBConnectionConfigDTO($configService->getDBConnectionConfig());
 try {
-    $DBConnection = new DBConnection($dBConnectionConfig);
+    $DBConnection = new DBConnection(new MysqliWrapper, $dBConnectionConfig);
 } catch (DBException $e) {
     header('Location: /');
     exit;

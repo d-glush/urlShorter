@@ -3,12 +3,10 @@
 namespace App\DBConnection;
 
 use mysqli;
-use phpDocumentor\Reflection\UsingTagsTest;
-use RuntimeException;
 
 class DBConnection {
     private const INSERT_QUERY_FORMAT = 'INSERT INTO %1$s (%2$s) VALUES (%3$s)';
-    private const SELECT_QUERY_FORMAT = 'SELECT * FROM %1$s %2$s %3$s %4$s';
+    private const SELECT_QUERY_FORMAT = 'SELECT * FROM %1$s %2$s';
     private const UPDATE_QUERY_FORMAT = 'UPDATE %1$s SET %2$s WHERE id=%3$d';
 
     private mysqli $connection;
@@ -16,9 +14,13 @@ class DBConnection {
     /**
      * @throws DBException;
      */
-    public function __construct(DBConnectionConfigDTO $configDTO)
+    public function __construct(MysqliWrapper $mysqli, DBConnectionConfigDTO $configDTO)
     {
-        $this->connection = new mysqli(
+        ini_set('display_errors','Off');
+        //crap?
+        $this->connection = $mysqli;
+
+        $this->connection->connect(
             $configDTO->getHost(),
             $configDTO->getUsername(),
             $configDTO->getPassword(),
@@ -26,9 +28,10 @@ class DBConnection {
             $configDTO->getPort()
         );
 
-        if ($this->connection->errno) {
-            throw new DBException($this->connection->errno);
+        if ($this->connection->isConnectError()) {
+            throw new DBException($this->connection->connect_errno);
         }
+        ini_set('display_errors','On');
     }
 
     /**
@@ -39,9 +42,12 @@ class DBConnection {
         $columnsExploded = [];
         $valuesExploded = [];
         foreach ($data as $column => $value) {
-            $dataQueryPartExploded[] = "`$column` = '$value'";
             $columnsExploded[] = "`$column`";
-            $valuesExploded[] = "'$value'";
+            if (is_float($value) || is_int($value)) {
+                $valuesExploded[] = "$value";
+            } else {
+                $valuesExploded[] = "'$value'";
+            }
         }
 
         $columns = implode(',', $columnsExploded);
@@ -57,35 +63,23 @@ class DBConnection {
         if (!$this->connection->query($query)) {
             throw new DBException();
         }
-        return $this->connection->insert_id;
+        return $this->connection->getInsertId();
     }
 
     /**
      * @throws DBException
      */
-    public function select(string $tableName, ?string $where = null, ?string $orderBy = null, ?string $limit = null): array
+    public function select(string $tableName, ?string $where = null): array
     {
         $whereQueryPart = '';
         if ($where) {
             $whereQueryPart = "WHERE $where";
         }
 
-        $orderQueryPart = '';
-        if ($orderBy) {
-            $orderQueryPart = "ORDER BY $orderBy";
-        }
-
-        $limitQueryPart = '';
-        if ($limit) {
-            $limitQueryPart = "LIMIT $limit";
-        }
-
         $query = sprintf(
             self::SELECT_QUERY_FORMAT,
             $tableName,
             $whereQueryPart,
-            $orderQueryPart,
-            $limitQueryPart
         );
 
         $queryResult = $this->connection->query($query);
@@ -103,7 +97,11 @@ class DBConnection {
     {
         $dataQueryPartExploded = [];
         foreach ($data as $column => $value) {
-            $dataQueryPartExploded[] = "`$column` = '$value'";
+            if (is_float($value) || is_int($value)) {
+                $dataQueryPartExploded[] = "`$column`=$value";
+            } else {
+                $dataQueryPartExploded[] = "`$column`='$value'";
+            }
         }
         $dataQueryPart = implode(', ', $dataQueryPartExploded);
 

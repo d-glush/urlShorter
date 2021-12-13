@@ -5,6 +5,7 @@ use App\ConfigService\ConfigService;
 use App\DBConnection\DBConnection;
 use App\DBConnection\DBConnectionConfigDTO;
 use App\DBConnection\DBException;
+use App\DBConnection\MysqliWrapper;
 use App\Response\Response;
 use App\Response\ResponseErrorEnum;
 use App\ShortUrlRepository\ShortUrlRepository;
@@ -25,7 +26,7 @@ switch($method) {
         $configService = new ConfigService();
         $dBConnectionConfig = new DBConnectionConfigDTO($configService->getDBConnectionConfig());
         try {
-            $DBConnection = new DBConnection($dBConnectionConfig);
+            $DBConnection = new DBConnection(new MysqliWrapper, $dBConnectionConfig);
         } catch (DBException $e) {
             $result = new Response();
             $result->setError(ResponseErrorEnum::DATABASE_ERROR);

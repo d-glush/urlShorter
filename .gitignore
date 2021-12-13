@@ -3,5 +3,6 @@
 composer.lock
 composer.phar
 /.phpunit.cache
+/logs
 
 !.gitkeep
